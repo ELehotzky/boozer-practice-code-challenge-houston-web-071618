@@ -7,15 +7,15 @@ class CocktailsContainer extends Component {
 
 	state = {
 		drinks: [],
+		ingredients: [],
+		proportions: [],
 		displayedCocktail: null
 	}	
 
 	handleClick = (drink) => {
-		// debugger
 		this.setState(state => ({
 			displayedCocktail: drink
 		}))
-		console.log(drink.name)
 	}
 
 	componentDidMount() {
@@ -26,13 +26,31 @@ class CocktailsContainer extends Component {
 					drinks: data
 				})
 			})
+
+		fetch("https://react-boozer-backend.herokuapp.com/api/v1/ingredients")
+			.then(resp => resp.json())
+			.then((data) => {
+				this.setState({
+					ingredients: data
+				})
+			})
+
+		fetch("https://react-boozer-backend.herokuapp.com/api/v1/proportions")
+			.then(resp => resp.json())
+			.then((data) => {
+				this.setState({
+					proportions: data
+				})
+			})
 		}
 
 	render(){
 		return (
 		  <div className="container">
-		  	< CocktailsList drinks={this.state.drinks} displayedCocktail={this.handleClick} />
-		  	< CocktailDisplay displayedCocktail={this.state.displayedCocktail} />
+		  	< CocktailsList drinks={this.state.drinks} handleClick={this.handleClick} />
+		  	{this.state.displayedCocktail ? 
+		  		< CocktailDisplay displayedCocktail={this.state.displayedCocktail} ingredients={this.state.ingredients} proportions={this.state.proportions} /> 
+		  		: <p>Select a drink</p>}
 		  	< Form />
 		  </div>
 		)
